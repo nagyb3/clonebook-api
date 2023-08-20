@@ -41,7 +41,41 @@ app.post(
             authorid: req.body.authorid,
         });
         res.send({
-            message: "message submitted",
+            response: "message submitted",
+        });
+    })
+);
+
+app.get(
+    "/comments",
+    asyncHandler(async (req, res) => {
+        const theComment = await Comment.find({});
+        res.send({
+            comments_array: theComment,
+        });
+    })
+);
+
+app.get(
+    "/comments/:commentid",
+    asyncHandler(async (req, res) => {
+        const theComment = await Comment.find({ _id: req.params.commentid });
+        res.send({
+            array: theComment,
+        });
+    })
+);
+
+app.post(
+    "/comments",
+    asyncHandler(async (req, res) => {
+        await Comment.create({
+            comment_author_id: req.body.comment_author_id,
+            post_id: req.body.post_id,
+            text: req.body.text,
+        });
+        res.send({
+            response: "comment submitted",
         });
     })
 );
