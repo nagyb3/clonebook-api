@@ -15,6 +15,7 @@ const PORT = 5000;
 const Post = require("./models/post");
 const User = require("./models/user");
 const Comment = require("./models/comment");
+const Message = require("./models/message");
 
 require("dotenv").config();
 
@@ -40,9 +41,6 @@ app.get(
     "/posts",
     asyncHandler(async (req, res) => {
         const allPosts = await Post.find({});
-
-        console.log(allPosts);
-
         res.send({ all_posts: allPosts });
     })
 );
@@ -50,6 +48,7 @@ app.get(
 app.post(
     "/posts",
     asyncHandler(async (req, res) => {
+        //TODO: handle if text or authorid is not given
         await Post.create({
             text: req.body.text,
             authorid: req.body.authorid,
@@ -63,9 +62,9 @@ app.post(
 app.get(
     "/comments",
     asyncHandler(async (req, res) => {
-        const theComment = await Comment.find({});
+        const allComments = await Comment.find({});
         res.send({
-            comments_array: theComment,
+            comments_array: allComments,
         });
     })
 );
@@ -73,6 +72,7 @@ app.get(
 app.get(
     "/comments/:commentid",
     asyncHandler(async (req, res) => {
+        //TODO: handle if commentid doesnt exist
         const theComment = await Comment.find({ _id: req.params.commentid });
         res.send({
             array: theComment,
@@ -83,6 +83,7 @@ app.get(
 app.post(
     "/comments",
     asyncHandler(async (req, res) => {
+        //TODO: handle if required attr is not given
         await Comment.create({
             comment_author_id: req.body.comment_author_id,
             post_id: req.body.post_id,
@@ -90,6 +91,39 @@ app.post(
         });
         res.send({
             response: "comment submitted",
+        });
+    })
+);
+
+app.post(
+    "/message",
+    asyncHandler(async (req, res) => {
+        //TODO: handle if a required attr is not given
+        await Message.create({
+            text: req.body.text,
+            sender_user_id: req.body.sender_user_id,
+            receiver_user_id: req.body.receiver_user_id,
+        });
+    })
+);
+
+app.get(
+    "/message/:id",
+    asyncHandler(async (req, res) => {
+        //TODO: handle if id doesnt exist
+        const theComment = await Comment.find({ _id: req.params.id });
+        res.send({ comment: theComment });
+    })
+);
+
+app.get(
+    "/message/user/:userid",
+    asyncHandler(async (req, res) => {
+        const messagesWithUserId = await Message.find({
+            $or: [
+                { sender_user_id: req.params.userid },
+                { receiver_user_id: req.params.userid },
+            ],
         });
     })
 );

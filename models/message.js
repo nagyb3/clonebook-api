@@ -1,21 +1,17 @@
 const mongoose = require("mongoose");
 
-const CommentSchema = new mongoose.Schema({
-    comment_author_id: {
-        type: String,
-        required: true,
-    },
+const MessageSchema = new mongoose.Schema({
     text: {
         type: String,
         required: true,
     },
-    post_id: {
+    sender_user_id: {
         type: String,
         required: true,
     },
-    numberOfLikes: {
-        type: Number,
-        default: 0,
+    receiver_user_id: {
+        type: String,
+        required: true,
     },
     creation_date: {
         type: Date,
@@ -23,4 +19,4 @@ const CommentSchema = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model("Comment", CommentSchema);
+module.exports = mongoose.model("Message", MessageSchema);
