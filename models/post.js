@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema({
-    authorid: {
+    author_username: {
         type: String,
         required: true,
     },
@@ -11,6 +11,13 @@ const postSchema = new mongoose.Schema({
     creation_date: {
         type: Date,
         default: new Date(),
+    },
+    numberOfLikes: {
+        type: Number,
+        default: 0,
+    },
+    comments: {
+        type: Array,
     },
 });
 

@@ -51,11 +51,28 @@ app.post(
         //TODO: handle if text or authorid is not given
         await Post.create({
             text: req.body.text,
-            authorid: req.body.authorid,
+            // authorid: req.body.authorid,
+            author_username: req.body.author_username,
         });
         res.send({
             response: "message submitted",
         });
+    })
+);
+
+//GET all of the posts for a username
+app.get(
+    "/posts/user/:username",
+    asyncHandler(async (req, res) => {
+        //TODO
+    })
+);
+
+//GET a post by id
+app.get(
+    "/posts/:postid",
+    asyncHandler(async (req, res) => {
+        //TODO
     })
 );
 
@@ -85,7 +102,7 @@ app.post(
     asyncHandler(async (req, res) => {
         //TODO: handle if required attr is not given
         await Comment.create({
-            comment_author_id: req.body.comment_author_id,
+            comment_author_username: req.body.comment_author_username,
             post_id: req.body.post_id,
             text: req.body.text,
         });

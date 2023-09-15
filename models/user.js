@@ -15,13 +15,6 @@ const UserSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
-    numberOfLikes: {
-        type: Number,
-        default: 0,
-    },
-    comments: {
-        type: Array,
-    },
 });
 
 module.exports = mongoose.model("User", UserSchema);
