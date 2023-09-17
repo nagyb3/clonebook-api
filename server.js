@@ -145,6 +145,35 @@ app.get(
     })
 );
 
+app.delete(
+    "/posts/:postid",
+    asyncHandler(async (req, res) => {
+        await Post.deleteOne({ _id: req.params.postid });
+        res.sendStatus(200);
+    })
+);
+
+app.get(
+    "/friends/:userid",
+    asyncHandler(async (req, res) => {})
+);
+
+app.put(
+    "/friends/add",
+    asyncHandler(async (req, res) => {
+        //add the second user to the first user's friends array
+        await User.updateOne(
+            { username: req.body.first_username },
+            { $push: { friends: req.body.second_username } }
+        );
+        await User.updateOne(
+            { username: req.body.second_username },
+            { $push: { friends: req.body.first_username } }
+        );
+        res.sendStatus(200);
+    })
+);
+
 mongoose.set("strictQuery", false);
 const mongoDB = process.env.MONGODB_URL;
 

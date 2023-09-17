@@ -15,6 +15,9 @@ const UserSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
+    friends: {
+        type: Array,
+    },
 });
 
 module.exports = mongoose.model("User", UserSchema);
