@@ -155,7 +155,12 @@ app.delete(
 
 app.get(
     "/friends/:userid",
-    asyncHandler(async (req, res) => {})
+    asyncHandler(async (req, res) => {
+        const thisUser = await User.findOne({ username: req.params.userid });
+        res.send({
+            friends: thisUser.friends,
+        });
+    })
 );
 
 app.put(
@@ -171,6 +176,47 @@ app.put(
             { $push: { friends: req.body.first_username } }
         );
         res.sendStatus(200);
+    })
+);
+
+//messegner
+//get the chats between two users
+app.post(
+    "/chat",
+    asyncHandler(async (req, res) => {
+        const messagesList = await Message.find({
+            $or: [
+                {
+                    sender_username: req.body.rec_user,
+                    receiver_username: req.body.req_user,
+                },
+                {
+                    sender_username: req.body.req_user,
+                    receiver_username: req.body.rec_user,
+                },
+            ],
+        });
+        res.json({
+            requester: req.body.id,
+            parameter_user: req.params.id,
+            messages: messagesList,
+        });
+    })
+);
+
+//create message
+app.post(
+    "/messages/create",
+    bodyParser.json(),
+    asyncHandler(async (req, res) => {
+        await Message.create({
+            sender_username: req.body.sender_username,
+            receiver_username: req.body.receiver_username,
+            text: req.body.text,
+        });
+        res.json({
+            message: "message submitted",
+        });
     })
 );
 
