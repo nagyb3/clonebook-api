@@ -48,15 +48,24 @@ app.get(
 app.post(
     "/posts",
     asyncHandler(async (req, res) => {
-        //TODO: handle if text or authorid is not given
-        await Post.create({
-            text: req.body.text,
-            // authorid: req.body.authorid,
-            author_username: req.body.author_username,
-        });
-        res.send({
-            response: "message submitted",
-        });
+        if (
+            req.body.text === undefined ||
+            req.body.author_username === undefined
+        ) {
+            res.sendStatus(422);
+        }
+        try {
+            jwt.verify(req.headers.authorization.split(" ")[1], "secretKey");
+            await Post.create({
+                text: req.body.text,
+                author_username: req.body.author_username,
+            });
+            res.send({
+                response: "message submitted",
+            });
+        } catch {
+            res.sendStatus(401);
+        }
     })
 );
 
@@ -90,32 +99,55 @@ app.get(
     "/comments/:commentid",
     asyncHandler(async (req, res) => {
         //TODO: handle if commentid doesnt exist
-        const theComment = await Comment.find({ _id: req.params.commentid });
-        res.send({
-            array: theComment,
-        });
+        try {
+            const theComment = await Comment.find({
+                _id: req.params.commentid,
+            });
+            res.send({
+                array: theComment,
+            });
+        } catch {
+            res.sendStatus(401);
+        }
     })
 );
 
 app.post(
     "/comments",
     asyncHandler(async (req, res) => {
-        //TODO: handle if required attr is not given
-        await Comment.create({
-            comment_author_username: req.body.comment_author_username,
-            post_id: req.body.post_id,
-            text: req.body.text,
-        });
-        res.send({
-            response: "comment submitted",
-        });
+        if (
+            (req.body.comment_author_username === undefined ||
+                req.body.post_id === undefined,
+            req.body.text === undefined)
+        ) {
+            res.sendStatus(422);
+        }
+        try {
+            jwt.verify(req.headers.authorization.split(" ")[1], "secretKey");
+            await Comment.create({
+                comment_author_username: req.body.comment_author_username,
+                post_id: req.body.post_id,
+                text: req.body.text,
+            });
+            res.send({
+                response: "comment submitted",
+            });
+        } catch {
+            res.sendStatus(401);
+        }
     })
 );
 
 app.post(
     "/message",
     asyncHandler(async (req, res) => {
-        //TODO: handle if a required attr is not given
+        if (
+            (req.body.text === undefined ||
+                req.body.sender_user_id === undefined,
+            req.body.receiver_user_id === undefined)
+        ) {
+            res.sendStatus(422);
+        }
         await Message.create({
             text: req.body.text,
             sender_user_id: req.body.sender_user_id,
@@ -127,9 +159,12 @@ app.post(
 app.get(
     "/message/:id",
     asyncHandler(async (req, res) => {
-        //TODO: handle if id doesnt exist
-        const theComment = await Comment.find({ _id: req.params.id });
-        res.send({ comment: theComment });
+        try {
+            const theComment = await Comment.find({ _id: req.params.id });
+            res.send({ comment: theComment });
+        } catch {
+            res.send(401);
+        }
     })
 );
 
