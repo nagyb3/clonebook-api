@@ -37,6 +37,7 @@ app.listen(PORT, () => {
     console.log(`server started on port ${PORT}`);
 });
 
+//get all of the posts (user for homepage)
 app.get(
     "/posts",
     asyncHandler(async (req, res) => {
@@ -45,6 +46,7 @@ app.get(
     })
 );
 
+//create post
 app.post(
     "/posts",
     asyncHandler(async (req, res) => {
@@ -97,6 +99,7 @@ app.get(
     })
 );
 
+//get all of the comments
 app.get(
     "/comments",
     asyncHandler(async (req, res) => {
@@ -107,6 +110,7 @@ app.get(
     })
 );
 
+//get a comment by its id
 app.get(
     "/comments/:commentid",
     asyncHandler(async (req, res) => {
@@ -123,6 +127,7 @@ app.get(
     })
 );
 
+//post a comment
 app.post(
     "/comments",
     asyncHandler(async (req, res) => {
@@ -149,6 +154,7 @@ app.post(
     })
 );
 
+// post a message (chat)
 app.post(
     "/message",
     asyncHandler(async (req, res) => {
@@ -167,6 +173,7 @@ app.post(
     })
 );
 
+//get a message by its id
 app.get(
     "/message/:id",
     asyncHandler(async (req, res) => {
@@ -179,6 +186,7 @@ app.get(
     })
 );
 
+//get the messages that given user either sent or received
 app.get(
     "/message/user/:userid",
     asyncHandler(async (req, res) => {
@@ -191,6 +199,7 @@ app.get(
     })
 );
 
+//delete a post by its id
 app.delete(
     "/posts/:postid",
     asyncHandler(async (req, res) => {
@@ -199,6 +208,7 @@ app.delete(
     })
 );
 
+//get the friends of a user
 app.get(
     "/friends/:userid",
     asyncHandler(async (req, res) => {
@@ -209,6 +219,7 @@ app.get(
     })
 );
 
+//add a user a to another user's friends array (make friendship)
 app.put(
     "/friends/add",
     asyncHandler(async (req, res) => {
