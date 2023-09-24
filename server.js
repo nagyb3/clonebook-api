@@ -73,7 +73,15 @@ app.post(
 app.get(
     "/posts/user/:username",
     asyncHandler(async (req, res) => {
-        //TODO
+        try {
+            res.send(
+                await Post.find({
+                    author_username: req.params.username,
+                })
+            );
+        } catch {
+            res.sendStatus(401);
+        }
     })
 );
 
@@ -81,7 +89,11 @@ app.get(
 app.get(
     "/posts/:postid",
     asyncHandler(async (req, res) => {
-        //TODO
+        try {
+            res.send(await Post.findOne({ _id: req.params.postid }));
+        } catch {
+            res.sendStatus(401);
+        }
     })
 );
 
@@ -98,7 +110,6 @@ app.get(
 app.get(
     "/comments/:commentid",
     asyncHandler(async (req, res) => {
-        //TODO: handle if commentid doesnt exist
         try {
             const theComment = await Comment.find({
                 _id: req.params.commentid,
