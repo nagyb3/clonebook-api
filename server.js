@@ -280,7 +280,6 @@ app.post(
     "/chat",
     asyncHandler(async (req, res) => {
         try {
-            jwt.verify(req.headers.authorization.split(" ")[1], "secretKey");
             const messagesList = await Message.find({
                 $or: [
                     {
