@@ -234,15 +234,40 @@ app.put(
     asyncHandler(async (req, res) => {
         try {
             jwt.verify(req.headers.authorization.split(" ")[1], "secretKey");
-            await User.updateOne(
-                { username: req.body.req_username },
-                { $push: { friends: req.body.second_username } }
-            );
-            await User.updateOne(
-                { username: req.body.second_username },
-                { $push: { friends: req.body.req_username } }
-            );
-            res.sendStatus(200);
+            // figure out if other user exists!!
+            const secondUser = await User.findOne({
+                username: req.body.second_username,
+            });
+            const reqUser = await User.findOne({
+                username: req.body.req_username,
+            });
+            if (secondUser === null || reqUser === null) {
+                //second_username doesnt exist in db
+                res.sendStatus(404);
+            } else {
+                //both users exist
+                //check if they already friends:
+                if (
+                    !(
+                        reqUser.friends.includes(req.body.second_username) ||
+                        secondUser.friends.includes(req.body.req_username)
+                    )
+                ) {
+                    await User.updateOne(
+                        { username: req.body.req_username },
+                        { $push: { friends: req.body.second_username } }
+                    );
+                    await User.updateOne(
+                        { username: req.body.second_username },
+                        { $push: { friends: req.body.req_username } }
+                    );
+                    res.sendStatus(200);
+                } else {
+                    res.send({
+                        status: "already friends",
+                    });
+                }
+            }
         } catch {
             res.sendStatus(401);
         }
