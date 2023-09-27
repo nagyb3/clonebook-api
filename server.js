@@ -164,12 +164,21 @@ app.post(
             req.body.receiver_user_id === undefined)
         ) {
             res.sendStatus(422);
+        } else {
+            try {
+                jwt.verify(
+                    req.headers.authorization.split(" ")[1],
+                    "secretKey"
+                );
+                await Message.create({
+                    text: req.body.text,
+                    sender_user_id: req.body.sender_user_id,
+                    receiver_user_id: req.body.receiver_user_id,
+                });
+            } catch {
+                res.sendStatus(401);
+            }
         }
-        await Message.create({
-            text: req.body.text,
-            sender_user_id: req.body.sender_user_id,
-            receiver_user_id: req.body.receiver_user_id,
-        });
     })
 );
 
@@ -223,41 +232,50 @@ app.get(
 app.put(
     "/friends/add",
     asyncHandler(async (req, res) => {
-        //add the second user to the first user's friends array
-        await User.updateOne(
-            { username: req.body.first_username },
-            { $push: { friends: req.body.second_username } }
-        );
-        await User.updateOne(
-            { username: req.body.second_username },
-            { $push: { friends: req.body.first_username } }
-        );
-        res.sendStatus(200);
+        try {
+            jwt.verify(req.headers.authorization.split(" ")[1], "secretKey");
+            await User.updateOne(
+                { username: req.body.req_username },
+                { $push: { friends: req.body.second_username } }
+            );
+            await User.updateOne(
+                { username: req.body.second_username },
+                { $push: { friends: req.body.req_username } }
+            );
+            res.sendStatus(200);
+        } catch {
+            res.sendStatus(401);
+        }
     })
 );
 
-//messegner
+//messenger
 //get the chats between two users
 app.post(
     "/chat",
     asyncHandler(async (req, res) => {
-        const messagesList = await Message.find({
-            $or: [
-                {
-                    sender_username: req.body.rec_user,
-                    receiver_username: req.body.req_user,
-                },
-                {
-                    sender_username: req.body.req_user,
-                    receiver_username: req.body.rec_user,
-                },
-            ],
-        });
-        res.json({
-            requester: req.body.id,
-            parameter_user: req.params.id,
-            messages: messagesList,
-        });
+        try {
+            jwt.verify(req.headers.authorization.split(" ")[1], "secretKey");
+            const messagesList = await Message.find({
+                $or: [
+                    {
+                        sender_username: req.body.rec_user,
+                        receiver_username: req.body.req_user,
+                    },
+                    {
+                        sender_username: req.body.req_user,
+                        receiver_username: req.body.rec_user,
+                    },
+                ],
+            });
+            res.json({
+                requester: req.body.id,
+                parameter_user: req.params.id,
+                messages: messagesList,
+            });
+        } catch {
+            res.sendStatus(401);
+        }
     })
 );
 
@@ -266,14 +284,17 @@ app.post(
     "/messages/create",
     bodyParser.json(),
     asyncHandler(async (req, res) => {
-        await Message.create({
-            sender_username: req.body.sender_username,
-            receiver_username: req.body.receiver_username,
-            text: req.body.text,
-        });
-        res.json({
-            message: "message submitted",
-        });
+        try {
+            jwt.verify(req.headers.authorization.split(" ")[1], "secretKey");
+            await Message.create({
+                sender_username: req.body.sender_username,
+                receiver_username: req.body.receiver_username,
+                text: req.body.text,
+            });
+            res.sendStatus(200);
+        } catch {
+            res.sendStatus(401);
+        }
     })
 );
 
