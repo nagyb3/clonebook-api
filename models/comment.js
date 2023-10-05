@@ -19,7 +19,7 @@ const CommentSchema = new mongoose.Schema({
     },
     creation_date: {
         type: Date,
-        default: new Date(),
+        required: true,
     },
 });
 

@@ -150,15 +150,11 @@ app.post(
                                 req.body.comment_author_username,
                             post_id: req.body.post_id,
                             text: req.body.text,
+                            creation_date: new Date(),
                         }),
                     },
                 }
             );
-            // await Comment.create({
-            //     comment_author_username: req.body.comment_author_username,
-            //     post_id: req.body.post_id,
-            //     text: req.body.text,
-            // });
             res.send({
                 response: "comment submitted",
             });
@@ -188,6 +184,7 @@ app.post(
                     text: req.body.text,
                     sender_user_id: req.body.sender_user_id,
                     receiver_user_id: req.body.receiver_user_id,
+                    creation_date: new Date(),
                 });
             } catch {
                 res.sendStatus(401);
