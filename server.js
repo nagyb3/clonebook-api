@@ -61,6 +61,7 @@ app.post(
             await Post.create({
                 text: req.body.text,
                 author_username: req.body.author_username,
+                creation_date: new Date(),
             });
             res.send({
                 response: "message submitted",
@@ -297,15 +298,27 @@ app.get("/users/:username/bio", async (req, res) => {
     }
 });
 
+app.get("/users", async (req, res) => {
+    try {
+        jwt.verify(req.headers.authorization.split(" ")[1], "secretKey");
+        const allUsers = await User.find({});
+        const usernames = [];
+        allUsers.forEach((user) => {
+            usernames.push(user.username);
+        });
+        res.send({
+            all_usernames: usernames,
+        });
+    } catch {
+        res.sendStatus(401);
+    }
+});
+
 app.put(
     "/users/:username/bio",
     asyncHandler(async (req, res) => {
         try {
-            // console.log(req.body.bio);
-            // console.log(req.params.username);
-            // console.log(req.headers.authorization.split(" ")[1]);
             jwt.verify(req.headers.authorization.split(" ")[1], "secretKey");
-            // update the User's bio
             await User.updateOne(
                 { username: req.params.username },
                 { bio: req.body.bio }

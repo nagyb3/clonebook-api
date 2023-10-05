@@ -10,7 +10,7 @@ const postSchema = new mongoose.Schema({
     },
     creation_date: {
         type: Date,
-        default: new Date(),
+        required: true,
     },
     numberOfLikes: {
         type: Number,
