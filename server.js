@@ -164,34 +164,6 @@ app.post(
     })
 );
 
-// post a message (chat)
-// app.post(
-//     "/message",
-//     asyncHandler(async (req, res) => {
-//         if (
-//             (req.body.text === undefined ||
-//                 req.body.sender_user_id === undefined,
-//             req.body.receiver_user_id === undefined)
-//         ) {
-//             res.sendStatus(422);
-//         } else {
-//             try {
-//                 jwt.verify(
-//                     req.headers.authorization.split(" ")[1],
-//                     "secretKey"
-//                 );
-//                 await Message.create({
-//                     text: req.body.text,
-//                     sender_user_id: req.body.sender_user_id,
-//                     receiver_user_id: req.body.receiver_user_id,
-//                 });
-//             } catch {
-//                 res.sendStatus(401);
-//             }
-//         }
-//     })
-// );
-
 //get a message by its id
 app.get(
     "/message/:id",
