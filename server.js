@@ -140,11 +140,24 @@ app.post(
         }
         try {
             jwt.verify(req.headers.authorization.split(" ")[1], "secretKey");
-            await Comment.create({
-                comment_author_username: req.body.comment_author_username,
-                post_id: req.body.post_id,
-                text: req.body.text,
-            });
+            await Post.updateOne(
+                { _id: req.body.post_id },
+                {
+                    $push: {
+                        comments: new Comment({
+                            comment_author_username:
+                                req.body.comment_author_username,
+                            post_id: req.body.post_id,
+                            text: req.body.text,
+                        }),
+                    },
+                }
+            );
+            // await Comment.create({
+            //     comment_author_username: req.body.comment_author_username,
+            //     post_id: req.body.post_id,
+            //     text: req.body.text,
+            // });
             res.send({
                 response: "comment submitted",
             });
@@ -268,6 +281,36 @@ app.put(
                     });
                 }
             }
+        } catch {
+            res.sendStatus(401);
+        }
+    })
+);
+
+app.get("/users/:username/bio", async (req, res) => {
+    try {
+        jwt.verify(req.headers.authorization.split(" ")[1], "secretKey");
+        const user = await User.findOne({ username: req.params.username });
+        res.send({ user: user });
+    } catch {
+        res.sendStatus(401);
+    }
+});
+
+app.put(
+    "/users/:username/bio",
+    asyncHandler(async (req, res) => {
+        try {
+            // console.log(req.body.bio);
+            // console.log(req.params.username);
+            // console.log(req.headers.authorization.split(" ")[1]);
+            jwt.verify(req.headers.authorization.split(" ")[1], "secretKey");
+            // update the User's bio
+            await User.updateOne(
+                { username: req.params.username },
+                { bio: req.body.bio }
+            );
+            res.sendStatus(200);
         } catch {
             res.sendStatus(401);
         }

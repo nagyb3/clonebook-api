@@ -18,6 +18,10 @@ const UserSchema = new mongoose.Schema({
     friends: {
         type: Array,
     },
+    bio: {
+        type: String,
+        default: "Your default bio",
+    },
 });
 
 module.exports = mongoose.model("User", UserSchema);
