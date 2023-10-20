@@ -351,6 +351,28 @@ app.post(
     })
 );
 
+app.put("/posts/:postid/like", async (req, res) => {
+    try {
+        const thatPost = await Post.findOne({ _id: req.params.postid });
+        if (thatPost.users_who_liked.includes(req.body.username)) {
+            await Post.updateOne(
+                { _id: req.params.postid },
+                { $pull: { users_who_liked: req.body.username } }
+            );
+            res.sendStatus(200);
+        } else {
+            await Post.updateOne(
+                { _id: req.params.postid },
+                { $push: { users_who_liked: req.body.username } }
+            );
+            console.log(thatPost);
+            res.sendStatus(200);
+        }
+    } catch {
+        res.sendStatus(401);
+    }
+});
+
 mongoose.set("strictQuery", false);
 const mongoDB = process.env.MONGODB_URL;
 

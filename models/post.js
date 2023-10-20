@@ -12,9 +12,9 @@ const postSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
-    numberOfLikes: {
-        type: Number,
-        default: 0,
+    users_who_liked: {
+        type: Array,
+        default: [],
     },
     comments: {
         type: Array,
