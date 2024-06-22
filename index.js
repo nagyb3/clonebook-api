@@ -10,14 +10,14 @@ const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const session = require("express-session");
 
-const PORT = 5000;
+require("dotenv").config();
+
+const PORT = process.env.PORT || 5000;
 
 const Post = require("./models/post");
 const User = require("./models/user");
 const Comment = require("./models/comment");
 const Message = require("./models/message");
-
-require("dotenv").config();
 
 app.use(
     session({
@@ -139,7 +139,7 @@ app.post(
         if (
             (req.body.comment_author_username === undefined ||
                 req.body.post_id === undefined,
-            req.body.text === undefined)
+                req.body.text === undefined)
         ) {
             res.sendStatus(422);
         }
